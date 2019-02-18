@@ -243,7 +243,14 @@ func main() {
 		speed := 0.002
 		if keys[sdl.SCANCODE_LSHIFT] == 1 {
 			speed = 0.005
-			bobTimer += 0.01
+			if keys[sdl.SCANCODE_UP] == 1 ||
+				keys[sdl.SCANCODE_W] == 1 ||
+				keys[sdl.SCANCODE_DOWN] == 1 ||
+				keys[sdl.SCANCODE_S] == 1 ||
+				keys[sdl.SCANCODE_A] == 1 ||
+				keys[sdl.SCANCODE_D] == 1 {
+				bobTimer += 0.01
+			}
 		}
 
 		if keys[sdl.SCANCODE_UP] == 1 || keys[sdl.SCANCODE_W] == 1 {
