@@ -207,6 +207,8 @@ func main() {
 	defer window.Destroy()
 	defer renderer.Destroy()
 
+	window.SetTitle("fps")
+
 	loadTextures(renderer)
 
 	running := true
