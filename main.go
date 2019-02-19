@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"runtime"
+	"strings"
 
 	"github.com/veandco/go-sdl2/img"
 
@@ -162,45 +163,61 @@ func rayBox(xs, ys, xd, yd, cx, cy float64) (float64, float64, bool) {
 	return closest, closestMu, didHit
 }
 
+func mapFromString(str string) Map {
+	var (
+		lines = strings.Split(str, "\n")
+		m     = make(Map, len(lines))
+	)
+
+	for j, line := range strings.Split(str, "\n") {
+		m[j] = make([]Tile, len(line))
+
+		for i, char := range line {
+			var t Tile
+			switch char {
+			case '1':
+				t = wall1
+			case '2':
+				t = wall2
+			default:
+				t = empty
+			}
+
+			m[j][i] = t
+		}
+	}
+
+	return m
+}
+
 func main() {
 	runtime.LockOSThread()
 
-	level := Map{
-		{wall1, wall1, wall1, wall1, wall1, wall1, wall1, wall1},
-		{wall1, empty, empty, empty, empty, empty, empty, wall1},
-		{wall1, empty, empty, empty, empty, empty, empty, wall1},
-		{wall1, empty, empty, empty, wall1, wall1, empty, wall1},
-		{wall1, empty, empty, empty, wall1, empty, empty, wall1},
-		{wall1, empty, empty, empty, wall1, wall1, wall1, wall1},
-		{wall1, empty, empty, empty, empty, empty, empty, wall2},
-		{wall1, empty, empty, empty, empty, empty, empty, wall1},
-		{wall1, empty, empty, empty, empty, empty, empty, wall1},
-		{wall1, empty, empty, empty, empty, empty, empty, wall1},
-		{wall2, empty, empty, empty, empty, empty, empty, wall1},
-		{wall1, empty, empty, empty, empty, empty, empty, wall1},
-		{wall1, empty, empty, empty, empty, empty, empty, wall1},
-		{wall1, empty, empty, empty, empty, empty, empty, wall1},
-		{wall1, empty, empty, empty, empty, empty, empty, wall1},
-		{wall1, empty, empty, empty, empty, empty, empty, wall1},
-		{wall1, empty, empty, empty, empty, empty, empty, wall1},
-		{wall1, empty, empty, empty, empty, empty, empty, wall1},
-		{wall1, empty, empty, empty, empty, empty, empty, wall1},
-		{wall1, empty, empty, empty, empty, empty, empty, wall1},
-		{wall1, empty, empty, empty, empty, empty, empty, wall1},
-		{wall1, wall1, wall1, wall1, wall1, wall1, wall1, wall1},
-	}
+	level := mapFromString(`
+ 111111111111111111111111111111111
+ 1                               1
+ 1                               2
+ 1                               1
+ 1      11111111111111111111111111
+ 1                               1
+ 1                               1
+ 1                               1
+ 1                               1
+ 1                               1
+ 1                               1
+ 1                               1
+ 1                               1
+ 1                               1
+ 1                               1
+ 1                               1
+ 1                               1
+ 111111111111111111111111111111111`,
+	)
 
-	entities := []*Entity{
-		&Entity{
-			X:       6,
-			Y:       7,
-			Width:   0.8,
-			Texture: textures["monster-1"],
-		},
-	}
+	entities := []*Entity{}
 
 	var (
-		x, y     = 2.5, 5.0
+		x, y     = 2.5, 2.0
 		angle    = 0.0
 		toTurn   = 0.0
 		bobTimer = 0.0
