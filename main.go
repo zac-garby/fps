@@ -106,7 +106,10 @@ func render(renderer *sdl.Renderer, level Map, entities []*Entity, xs, ys, angle
 				H: th,
 			}
 
-			brightness := uint8(255 / math.Pow(closestDistance, 1.5))
+			var (
+				torchMul   = math.Pow(4*sweep*(1-sweep), 1.4)
+				brightness = uint8(math.Min(255*torchMul/math.Pow(closestDistance, 1.5), 255))
+			)
 			if closestDistance < 1 {
 				brightness = 255
 			}
