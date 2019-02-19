@@ -320,7 +320,6 @@ func loadTextures(renderer *sdl.Renderer) {
 		"shotgun",
 		"wall",
 		"wall-2",
-		"monster-1",
 	}
 
 	for _, name := range toLoad {
