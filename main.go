@@ -30,16 +30,23 @@ const (
 // A Map stores the set of tiles which make up a game level.
 type Map = [][]Tile
 
-func render(renderer *sdl.Renderer, level Map, xs, ys, angle float64) {
+// An Entity represents a sprite to be drawn in the world.
+type Entity struct {
+	X, Y, Width float64
+	Texture     *sdl.Texture
+}
+
+func render(renderer *sdl.Renderer, level Map, entities []*Entity, xs, ys, angle float64) {
 	w, h, err := renderer.GetOutputSize()
 	if err != nil {
 		panic(err)
 	}
 
 	var (
-		width  = float64(w)
-		height = float64(h)
-		gap    = 16.0
+		width    = float64(w)
+		height   = float64(h)
+		gap      = 16.0
+		depthMap = make([]float64, w)
 	)
 
 	for sweep := 0.0; sweep < 1; sweep += gap / width {
@@ -72,6 +79,8 @@ func render(renderer *sdl.Renderer, level Map, xs, ys, angle float64) {
 				}
 			}
 		}
+
+		depthMap[screenX] = closestDistance
 
 		if !math.IsInf(closestDistance, 1) {
 			sliceHeight := int32(
@@ -181,6 +190,15 @@ func main() {
 		{wall1, wall1, wall1, wall1, wall1, wall1, wall1, wall1},
 	}
 
+	entities := []*Entity{
+		&Entity{
+			X:       6,
+			Y:       7,
+			Width:   0.8,
+			Texture: textures["monster-1"],
+		},
+	}
+
 	var (
 		x, y     = 2.5, 5.0
 		angle    = 0.0
@@ -284,7 +302,7 @@ func main() {
 		renderer.SetDrawColor(0, 0, 0, 255)
 		renderer.Clear()
 
-		render(renderer, level, x, y, angle)
+		render(renderer, level, entities, x, y, angle)
 
 		var (
 			boby = int32(math.Abs(math.Sin(bobTimer*0.3) * 32))
@@ -302,6 +320,7 @@ func loadTextures(renderer *sdl.Renderer) {
 		"shotgun",
 		"wall",
 		"wall-2",
+		"monster-1",
 	}
 
 	for _, name := range toLoad {
